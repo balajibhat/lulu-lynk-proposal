@@ -354,8 +354,26 @@ var HERO_CONFIG = {
 
   function createNodes() {
     nodes = [];
-    for (var i = 0; i < HERO_CONFIG.nodeCount; i++) {
-      nodes.push(new Node(W, H, HERO_CONFIG));
+    var count = HERO_CONFIG.nodeCount;
+    // Use grid-jitter distribution to prevent clumping
+    // Calculate a rough grid, then jitter each position randomly
+    var cols = Math.ceil(Math.sqrt(count * (W / H)));
+    var rows = Math.ceil(count / cols);
+    var cellW = W / cols;
+    var cellH = H / rows;
+    for (var i = 0; i < count; i++) {
+      var col = i % cols;
+      var row = Math.floor(i / cols);
+      // Center of cell + random jitter within 80% of cell
+      var cx = (col + 0.5) * cellW;
+      var cy = (row + 0.5) * cellH;
+      var jitterX = (Math.random() - 0.5) * cellW * 0.8;
+      var jitterY = (Math.random() - 0.5) * cellH * 0.8;
+      var node = new Node(W, H, HERO_CONFIG);
+      // Override the random anchor with grid-jittered position
+      node.anchorX = clamp(cx + jitterX, W * 0.05, W * 0.95);
+      node.anchorY = clamp(cy + jitterY, H * 0.05, H * 0.95);
+      nodes.push(node);
     }
   }
 
