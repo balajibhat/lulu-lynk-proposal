@@ -141,10 +141,13 @@ var HERO_CONFIG = {
       this.speedMult = 1.0;
     }
 
-    this.x = rand(0, w);
-    this.y = rand(0, h);
-    this.vx = rand(-0.5, 0.5) * cfg.speed * this.speedMult;
-    this.vy = rand(-0.5, 0.5) * cfg.speed * this.speedMult;
+    this.x = rand(w * 0.05, w * 0.95);
+    this.y = rand(h * 0.05, h * 0.95);
+    // Random initial direction with guaranteed minimum velocity
+    var angle = rand(0, Math.PI * 2);
+    var mag = rand(0.3, 0.6) * cfg.speed * this.speedMult;
+    this.vx = Math.cos(angle) * mag;
+    this.vy = Math.sin(angle) * mag;
 
     var colors = cfg.colors.nodes;
     this.color = colors[Math.floor(Math.random() * colors.length)];
@@ -161,26 +164,26 @@ var HERO_CONFIG = {
     this.x += this.vx;
     this.y += this.vy;
 
-    // Soft edge bounce (ease back instead of hard reflect)
-    var margin = 10;
-    if (this.x < margin) { this.vx += 0.02; }
-    if (this.x > w - margin) { this.vx -= 0.02; }
-    if (this.y < margin) { this.vy += 0.02; }
-    if (this.y > h - margin) { this.vy -= 0.02; }
+    // Soft edge bounce — reverse velocity with damping when near edges
+    var margin = 30;
+    if (this.x < margin) { this.vx = Math.abs(this.vx) * 0.8 + 0.05; this.x = margin; }
+    if (this.x > w - margin) { this.vx = -Math.abs(this.vx) * 0.8 - 0.05; this.x = w - margin; }
+    if (this.y < margin) { this.vy = Math.abs(this.vy) * 0.8 + 0.05; this.y = margin; }
+    if (this.y > h - margin) { this.vy = -Math.abs(this.vy) * 0.8 - 0.05; this.y = h - margin; }
 
-    // Clamp velocity so nothing goes crazy
-    var maxV = 1.2 * cfg.speed;
+    // Gentle drift force — sinusoidal so nodes always have motion
+    var angle = t * 0.0003 * this.speedMult + this.opacityPhase;
+    this.vx += Math.cos(angle) * 0.008 * cfg.speed;
+    this.vy += Math.sin(angle * 0.7 + 1.5) * 0.008 * cfg.speed;
+
+    // Clamp velocity
+    var maxV = 1.5 * cfg.speed;
     this.vx = clamp(this.vx, -maxV, maxV);
     this.vy = clamp(this.vy, -maxV, maxV);
 
-    // Gentle drift force — nodes always have a base velocity so animation never dies
-    var angle = t * 0.0002 * this.speedMult + this.opacityPhase;
-    this.vx += Math.cos(angle) * 0.005 * cfg.speed;
-    this.vy += Math.sin(angle * 0.7) * 0.005 * cfg.speed;
-
-    // Light friction — enough to prevent runaway, not enough to kill motion
-    this.vx *= 0.998;
-    this.vy *= 0.998;
+    // Very light friction — keeps things smooth without killing motion
+    this.vx *= 0.997;
+    this.vy *= 0.997;
 
     // Mouse repulsion
     if (mouseActive) {
