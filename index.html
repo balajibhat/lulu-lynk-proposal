@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lynk by LuLu — CDE Scope of Work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #005ccf;
+    --black: #1e1e1e;
+    --gray: #e5e5e5;
+    --gray-mid: #666;
+    --cyan: #7dd3e8;
+    --mint: #6bc4a6;
+    --sidebar-w: 260px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--black);
+    background: #fff;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4, h5 { font-family: 'Space Grotesk', sans-serif; line-height: 1.2; }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    position: fixed; top: 0; left: 0; bottom: 0;
+    background: var(--black);
+    padding: 2rem 0;
+    overflow-y: auto;
+    z-index: 100;
+  }
+  .sidebar-header {
+    padding: 0 1.5rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 1rem;
+  }
+  .sidebar-logo { height: 24px; width: auto; margin-bottom: 0.5rem; }
+  .sidebar-title {
+    font-size: 0.6rem; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+  .sidebar-nav { padding: 0 0.75rem; }
+  .sidebar-group { margin-bottom: 1.25rem; }
+  .sidebar-group-label {
+    font-size: 0.55rem; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    padding: 0 0.75rem; margin-bottom: 0.4rem;
+  }
+  .sidebar-link {
+    display: block;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.78rem; font-weight: 400;
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    line-height: 1.4;
+  }
+  .sidebar-link:hover { color: #fff; background: rgba(255,255,255,0.06); }
+  .sidebar-link.active { color: #ffffff; background: rgba(0,92,207,0.25); font-weight: 600; }
+  .sidebar-cta {
+    margin: 1.5rem 1.5rem 0;
+    padding: 1rem;
+    background: rgba(0,92,207,0.15);
+    border-radius: 8px;
+    text-align: center;
+  }
+  .sidebar-cta a { font-size: 0.75rem; font-weight: 600; color: var(--cyan); text-decoration: none; }
+  .sidebar-cta p { font-size: 0.6rem; color: rgba(255,255,255,0.35); margin-top: 0.3rem; }
+
+  /* ── Main ── */
+  .main { margin-left: var(--sidebar-w); overflow-x: hidden; }
+  .section { padding: 80px 48px; }
+  .section.full-width { max-width: none; }
+  .section-dark { background: var(--black); color: #fff; }
+  .section-gray { background: #f5f5f5; }
+
+  .section-label {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--blue); font-weight: 700; margin-bottom: 12px;
+  }
+  .section-title { font-size: 36px; font-weight: 700; margin-bottom: 16px; }
+  .section-desc { font-size: 17px; color: var(--gray-mid); max-width: 720px; margin-bottom: 40px; line-height: 1.7; }
+  .section-dark .section-desc { color: rgba(255,255,255,.6); }
+
+  /* ── Hero ── */
+  .hero { padding: 100px 48px 80px; position: relative; overflow: hidden; }
+  .hero-bg {
+    position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(0,92,207,0.12) 0%, rgba(125,211,232,0.08) 40%, transparent 70%);
+    animation: float 20s ease-in-out infinite; z-index: 0;
+  }
+  .hero-bg-2 {
+    position: absolute; bottom: -150px; left: -150px; width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(107,196,166,0.1) 0%, rgba(0,92,207,0.05) 50%, transparent 70%);
+    animation: float 25s ease-in-out infinite reverse; z-index: 0;
+  }
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -20px) scale(1.05); }
+    66% { transform: translate(-20px, 15px) scale(0.95); }
+  }
+  .hero > *:not(.hero-bg):not(.hero-bg-2) { position: relative; z-index: 1; }
+
+  .hero-badge {
+    display: inline-block; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--blue); font-weight: 700;
+    background: rgba(0,92,207,.08); border: 1px solid rgba(0,92,207,.15);
+    padding: 6px 16px; border-radius: 100px; margin-bottom: 24px;
+  }
+  .hero h1 { font-size: clamp(32px, 4vw, 48px); font-weight: 700; margin-bottom: 20px; max-width: 700px; line-height: 1.1; }
+  .hero-subtitle { font-size: 18px; color: var(--gray-mid); max-width: 600px; line-height: 1.7; margin-bottom: 32px; }
+  .hero-mission { font-size: 14px; color: #888; max-width: 550px; line-height: 1.6; padding-top: 24px; border-top: 1px solid var(--gray); }
+
+  /* ── Cards & Grid ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
+
+  .card { background: #fff; border: 1px solid var(--gray); border-radius: 12px; padding: 32px 28px; }
+  .card-dark { background: #2a2a2a; border: 1px solid rgba(255,255,255,.06); color: #fff; }
+  .card-muted { background: #f5f5f5; border: 1px solid var(--gray); }
+  .card h3 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .card h4 { font-size: 15px; color: var(--gray-mid); font-weight: 500; margin-bottom: 16px; }
+  .card-dark h4 { color: rgba(255,255,255,.5); }
+  .card ul { list-style: none; }
+  .card ul li { padding: 8px 0; font-size: 14px; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+  .card ul li .icon { flex-shrink: 0; width: 20px; text-align: center; font-size: 14px; margin-top: 2px; }
+  .icon-x { color: #c0392b; }
+  .icon-check { color: var(--mint); }
+
+  /* ── Stat cards ── */
+  .stat-card { background: #fff; border: 1px solid var(--gray); border-radius: 12px; padding: 24px 20px; text-align: center; }
+  .stat-card .big { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; color: var(--blue); }
+  .stat-card .label { font-size: 13px; color: var(--gray-mid); margin-top: 4px; }
+
+  /* ── Scope cards ── */
+  .scope-card {
+    background: #fff; border: 1px solid var(--gray); border-radius: 12px; padding: 32px 28px;
+    border-top: 4px solid var(--blue);
+  }
+  .scope-card.accent-mint { border-top-color: var(--mint); }
+  .scope-card.accent-cyan { border-top-color: var(--cyan); }
+  .scope-card h3 { font-size: 20px; margin-bottom: 4px; }
+  .scope-card .scope-price { font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: var(--blue); font-weight: 600; margin-bottom: 16px; }
+  .scope-card.accent-mint .scope-price { color: var(--mint); }
+  .scope-card.accent-cyan .scope-price { color: #45b5c8; }
+  .scope-card ul { list-style: none; }
+  .scope-card ul li { padding: 6px 0; font-size: 14px; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+  .scope-card ul li .icon { flex-shrink: 0; color: var(--blue); font-size: 14px; margin-top: 2px; }
+
+  /* ── Phase cards ── */
+  .phase-card { background: #fff; border: 1px solid var(--gray); border-radius: 12px; padding: 36px 32px; }
+  .phase-card h3 { font-size: 22px; margin-bottom: 20px; }
+  .phase-card ul { list-style: none; margin-bottom: 24px; }
+  .phase-card ul li { padding: 7px 0; font-size: 14px; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+  .phase-card ul li .icon { flex-shrink: 0; color: var(--blue); font-size: 14px; margin-top: 2px; }
+  .phase-card .payment { background: #f7f7f7; border-radius: 8px; padding: 14px 18px; font-size: 13px; color: var(--gray-mid); font-weight: 500; }
+
+  /* ── Callout ── */
+  .callout {
+    border-left: 4px solid var(--mint); background: #f7faf9; border-radius: 0 8px 8px 0;
+    padding: 20px 24px; font-size: 14px; color: var(--gray-mid); line-height: 1.7; margin-top: 24px;
+  }
+  .callout + .callout { margin-top: 16px; }
+  .callout-blue { border-left-color: var(--blue); background: rgba(0,92,207,.04); }
+
+  /* ── Pricing blocks ── */
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; }
+  .pricing-block {
+    background: #fff; border: 1px solid var(--gray); border-radius: 12px; padding: 32px 28px; border-left-width: 4px;
+  }
+  .pricing-block.border-blue { border-left-color: var(--blue); }
+  .pricing-block.border-mint { border-left-color: var(--mint); }
+  .pricing-block.border-cyan { border-left-color: var(--cyan); }
+  .pricing-block h4 { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--black); }
+  .pricing-block .big-price { font-family: 'Space Grotesk', sans-serif; font-size: 36px; font-weight: 700; color: var(--black); margin-bottom: 4px; }
+  .pricing-block .price-sub { font-size: 13px; color: var(--gray-mid); margin-bottom: 20px; }
+  .pricing-block ul { list-style: none; }
+  .pricing-block ul li { padding: 6px 0; font-size: 13px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; color: #444; }
+  .pricing-block ul li .icon { flex-shrink: 0; color: var(--blue); margin-top: 2px; }
+  .pricing-block .note { font-size: 12px; color: var(--gray-mid); margin-top: 16px; font-style: italic; }
+
+  /* ── Table ── */
+  .compare-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; font-size: 14px; }
+  .compare-table th {
+    text-align: left; padding: 14px 18px; background: #f5f5f5; font-weight: 600;
+    font-size: 13px; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-mid); border-bottom: 2px solid var(--gray);
+  }
+  .compare-table td { padding: 14px 18px; border-bottom: 1px solid var(--gray); }
+  .compare-table tr:last-child td { border-bottom: none; }
+
+  /* ── Big stat boxes ── */
+  .big-stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+  .big-stat-box { border: 1px solid var(--gray); border-radius: 12px; padding: 36px 32px; text-align: center; }
+  .big-stat-box.featured { border: 2px solid var(--blue); }
+  .big-stat-box .label { font-size: 14px; color: var(--gray-mid); margin-bottom: 8px; font-weight: 500; }
+  .big-stat-box .number { font-family: 'Space Grotesk', sans-serif; font-size: 48px; font-weight: 700; color: var(--black); }
+  .big-stat-box .sub { font-size: 14px; color: var(--gray-mid); margin-top: 8px; }
+
+  /* ── Competitive cards (dark) ── */
+  .comp-card {
+    background: #2a2a2a; border-radius: 12px; padding: 32px 28px; border: 1px solid rgba(255,255,255,.06);
+  }
+  .comp-card .comp-label { font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--cyan); font-weight: 600; margin-bottom: 8px; }
+  .comp-card .comp-name { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+  .comp-card p { font-size: 14px; color: rgba(255,255,255,.6); line-height: 1.6; margin-bottom: 8px; }
+  .comp-card strong { color: #fff; }
+  .comp-source { font-size: 11px; color: rgba(255,255,255,.3); font-style: italic; }
+
+  /* ── Timeline ── */
+  .timeline-h { display: flex; position: relative; margin-top: 40px; }
+  .timeline-h::before {
+    content: ''; position: absolute; top: 14px; left: 20px; right: 20px;
+    height: 3px; background: var(--gray); z-index: 0;
+  }
+  .timeline-step { flex: 1; position: relative; text-align: center; padding: 0 8px; }
+  .timeline-dot {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--blue);
+    margin: 0 auto 16px; position: relative; z-index: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .timeline-dot.phase2 { background: var(--mint); }
+  .timeline-dot.phase3 { background: var(--cyan); }
+  .timeline-dot-inner { width: 10px; height: 10px; border-radius: 50%; background: #fff; }
+  .timeline-weeks { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--blue); font-weight: 600; margin-bottom: 6px; }
+  .timeline-step.p2 .timeline-weeks { color: var(--mint); }
+  .timeline-step.p3 .timeline-weeks { color: #45b5c8; }
+  .timeline-step h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .timeline-step p { font-size: 12px; color: var(--gray-mid); line-height: 1.5; }
+
+  /* ── Terms ── */
+  .terms-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; }
+  .term-item { padding: 14px 0; border-bottom: 1px solid var(--gray); display: flex; align-items: flex-start; gap: 12px; }
+  .term-item:last-child { border-bottom: none; }
+  .term-num { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--blue); font-size: 14px; flex-shrink: 0; width: 24px; }
+  .term-text { font-size: 14px; line-height: 1.6; }
+  .term-text strong { font-weight: 600; }
+
+  .next-step { display: flex; align-items: flex-start; gap: 16px; padding: 20px 0; }
+  .next-step-num {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--blue); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 14px; flex-shrink: 0;
+  }
+  .next-step-content h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .next-step-content p { font-size: 14px; color: var(--gray-mid); }
+
+  .cta-bottom { margin-top: 48px; text-align: center; padding: 40px; background: #f7f7f7; border-radius: 12px; }
+  .cta-bottom p { font-size: 15px; color: var(--gray-mid); margin-bottom: 16px; }
+  .cta-bottom a {
+    display: inline-block; background: var(--blue); color: #fff; padding: 14px 36px;
+    border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 15px; transition: opacity .15s;
+  }
+  .cta-bottom a:hover { opacity: .85; }
+
+  /* ── Footer ── */
+  .footer { padding: 48px 64px; border-top: 1px solid var(--gray); display: flex; align-items: center; justify-content: space-between; }
+  .footer img { width: 100px; opacity: .5; }
+  .footer p { font-size: 13px; color: var(--gray-mid); }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .hero, .section { padding: 60px 32px; }
+    .footer { padding: 40px 32px; }
+    .grid-2, .pricing-grid, .big-stat-grid, .terms-grid { grid-template-columns: 1fr; }
+    .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr 1fr; }
+    .hero { min-height: auto; }
+    .timeline-h { flex-direction: column; gap: 8px; }
+    .timeline-h::before { display: none; }
+    .timeline-step { text-align: left; display: flex; align-items: flex-start; gap: 16px; padding: 12px 0; }
+    .timeline-dot { margin: 0; flex-shrink: 0; }
+    .timeline-weeks { text-align: left; }
+  }
+  @media (max-width: 600px) {
+    .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 32px; }
+    .section-title { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <img src="cde-logo-white.png" alt="CDE" class="sidebar-logo">
+    <div class="sidebar-title">Scope of Work — Lynk by LuLu</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Context</div>
+      <a href="#opportunity" class="sidebar-link" data-section="opportunity">The Opportunity</a>
+      <a href="#landscape" class="sidebar-link" data-section="landscape">Competitive Landscape</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">CDE Scope</div>
+      <a href="#phase1" class="sidebar-link" data-section="phase1">Phase 1: Brand + Microsite</a>
+      <a href="#phase2" class="sidebar-link" data-section="phase2">Phase 2: Ads + Email</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Investment</div>
+      <a href="#pricing" class="sidebar-link" data-section="pricing">Pricing Summary</a>
+      <a href="#math" class="sidebar-link" data-section="math">Year 1 Projection</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Logistics</div>
+      <a href="#timeline" class="sidebar-link" data-section="timeline">Timeline</a>
+      <a href="#terms" class="sidebar-link" data-section="terms">Terms & Next Steps</a>
+    </div>
+  </nav>
+  <div class="sidebar-cta">
+    <a href="mailto:balaji@cd-expansion.com">balaji@cd-expansion.com</a>
+    <p>Let's talk</p>
+  </div>
+</aside>
+
+<!-- ═══════════ MAIN CONTENT ═══════════ -->
+<div class="main">
+
+  <!-- ── Hero ── -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-bg-2"></div>
+    <div class="hero-badge">CDE Scope of Work</div>
+    <h1>Lynking Brands to the World's Shoppers</h1>
+    <p class="hero-subtitle">LuLu has the data, the properties, and the customers. Lynk is the retail media network that packages it all for advertisers. This document outlines CDE's scope: brand, microsite, paid acquisition, and email marketing.</p>
+    <p class="hero-mission">Core Digital Expansion — brand development, digital build, and paid media activation for Lynk by LuLu.</p>
+  </section>
+
+  <!-- ── The Opportunity ── -->
+  <section class="section" id="opportunity">
+    <div class="section-label">The Opportunity</div>
+    <h2 class="section-title">Retail media is the fastest-growing ad channel in the world.</h2>
+    <p class="section-desc">Retailers with first-party shopper data are building ad platforms that rival Google and Meta for ROAS. LuLu has everything it needs to compete — data, properties, and supplier relationships. What's missing is the brand and go-to-market engine.</p>
+
+    <div class="grid-5">
+      <div class="stat-card">
+        <div class="big">$15M</div>
+        <div class="label">Year 1 revenue target</div>
+      </div>
+      <div class="stat-card">
+        <div class="big">65%</div>
+        <div class="label">Current asset occupancy</div>
+      </div>
+      <div class="stat-card">
+        <div class="big">100%</div>
+        <div class="label">Target occupancy</div>
+      </div>
+      <div class="stat-card">
+        <div class="big">200+</div>
+        <div class="label">LuLu stores across GCC</div>
+      </div>
+      <div class="stat-card">
+        <div class="big">$0</div>
+        <div class="label">Formal ad sales infra today</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 32px;">
+      LuLu is already selling media assets informally and generating revenue. The opportunity is to <strong>organize, brand, and scale</strong> what already works — not to build from scratch.
+    </div>
+  </section>
+
+  <!-- ── Competitive Landscape ── -->
+  <section class="section full-width section-dark" id="landscape">
+    <div>
+      <div class="section-label" style="text-align: center; color: var(--cyan);">Competitive Landscape</div>
+      <h2 class="section-title" style="text-align: center;">The race is already on.</h2>
+      <p class="section-desc" style="text-align: center; margin: 0 auto 48px; max-width: 650px; color: rgba(255,255,255,0.5);">GCC retailers are launching retail media networks. The first movers are already capturing advertiser budgets. Every month without Lynk is market share lost to competitors.</p>
+      <div class="grid-3">
+        <div class="comp-card">
+          <div class="comp-label">MAF / Carrefour GCC</div>
+          <div class="comp-name">Precision Media</div>
+          <p>Launched Nov 2024. <strong>212 AI-powered screens</strong> across 25 UAE hypermarkets. 600M annual visitors, 20.5M loyalty members.</p>
+          <p><strong>150+ brand partners.</strong> 47% revenue growth in 2025. Expanded to Saudi Arabia and Egypt.</p>
+          <p>Publicis Media ME signed as largest agency partner.</p>
+          <div class="comp-source">Sources: MAF press releases, Campaign Middle East</div>
+        </div>
+        <div class="comp-card">
+          <div class="comp-label">What They Have</div>
+          <div class="comp-name">LuLu's Advantage</div>
+          <p><strong>Databricks-powered data platform</strong> with two internal products: Kaiser (supplier analytics) and Sofan (customer purchase intelligence).</p>
+          <p>Phase-of-life customer profiling. Existing supplier relationships already generating media revenue informally.</p>
+          <p>What's missing: <strong>the packaging, the brand, and the sales engine.</strong></p>
+        </div>
+        <div class="comp-card">
+          <div class="comp-label">The Gap</div>
+          <div class="comp-name">Why CDE</div>
+          <p>CDE builds the <strong>advertiser-facing layer</strong> — brand identity, landing page, ad creative, and email campaigns that drive advertiser sign-ups.</p>
+          <p>We don't need to build the platform. We need to <strong>sell it.</strong></p>
+          <p>One agency partnership = 20–30 brand advertisers on Lynk.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Phase 1: Brand + Microsite ── -->
+  <section class="section" id="phase1">
+    <div class="section-label">Phase 1 — Months 1–3</div>
+    <h2 class="section-title">Brand Development + Microsite — $10,500</h2>
+    <p class="section-desc">Build the Lynk brand identity and a conversion-focused advertiser microsite. The foundation everything else sits on.</p>
+
+    <div class="grid-2">
+      <div class="phase-card">
+        <h3>Brand Development — $5,500</h3>
+        <ul>
+          <li><span class="icon">&#9679;</span> Brand strategy and positioning for Lynk by LuLu</li>
+          <li><span class="icon">&#9679;</span> Visual identity system (logo, color palette, typography)</li>
+          <li><span class="icon">&#9679;</span> Brand guidelines document</li>
+          <li><span class="icon">&#9679;</span> Tone of voice and messaging framework</li>
+          <li><span class="icon">&#9679;</span> Complete file package (all formats, print + digital)</li>
+        </ul>
+        <div class="payment">Payment: 50% upfront ($2,750) / 50% on delivery ($2,750)</div>
+      </div>
+      <div class="phase-card">
+        <h3>Advertiser Microsite — $5,000</h3>
+        <ul>
+          <li><span class="icon">&#9679;</span> 3–5 page responsive microsite</li>
+          <li><span class="icon">&#9679;</span> Pages: Home, Inventory & Formats, Data Advantage, Get Started</li>
+          <li><span class="icon">&#9679;</span> Advertiser inquiry form with CRM integration</li>
+          <li><span class="icon">&#9679;</span> Analytics setup (GA4, conversion tracking)</li>
+          <li><span class="icon">&#9679;</span> CMS for content updates</li>
+          <li><span class="icon">&#9679;</span> Up to 2 rounds of design revisions</li>
+        </ul>
+        <div class="payment">Payment: 40/30/30 ($2,000 / $1,500 / $1,500)</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      The brand system will complement — not compete with — LuLu's parent brand identity. Lynk should feel like it belongs in the LuLu family while having its own distinct presence in the retail media space.
+    </div>
+    <div class="callout">
+      <strong>Does not include:</strong> Full website (10+ pages), backend platform development, sales deck design (quoted separately), or ongoing hosting/maintenance.
+    </div>
+  </section>
+
+  <!-- ── Phase 2: Paid Ads + Email ── -->
+  <section class="section section-gray" id="phase2">
+    <div class="section-label">Phase 2 — Months 4+</div>
+    <h2 class="section-title">Paid Ads + Email Marketing</h2>
+    <p class="section-desc">Advertiser acquisition through paid channels and email. Activate channels as you're ready — no commitment to all at once.</p>
+
+    <div class="pricing-grid">
+      <div class="pricing-block border-blue">
+        <h4>Paid Ads Creative (Statics)</h4>
+        <div class="big-price">$2,500</div>
+        <div class="price-sub">one-time initial suite + $1,500/mo ongoing</div>
+        <ul>
+          <li><span class="icon">&#10003;</span> Initial static ad creative suite across all active channels</li>
+          <li><span class="icon">&#10003;</span> LinkedIn, Meta, and Google Display formats</li>
+          <li><span class="icon">&#10003;</span> Multiple sizes and aspect ratios per platform</li>
+          <li><span class="icon">&#10003;</span> A/B test variants included</li>
+          <li><span class="icon">&#10003;</span> Monthly creative refresh and new concepts</li>
+        </ul>
+        <div class="note">Initial suite covers launch creatives. Monthly fee covers ongoing production, testing, and iteration.</div>
+      </div>
+      <div class="pricing-block border-mint">
+        <h4>Paid Ads Launch & Management</h4>
+        <div class="big-price">$2,000/mo</div>
+        <div class="price-sub">per active channel</div>
+        <ul>
+          <li><span class="icon">&#10003;</span> Campaign strategy and audience targeting</li>
+          <li><span class="icon">&#10003;</span> Campaign build, launch, and daily optimization</li>
+          <li><span class="icon">&#10003;</span> Available: LinkedIn Ads, Meta Ads, Google Search</li>
+          <li><span class="icon">&#10003;</span> Monthly performance reporting and strategy calls</li>
+          <li><span class="icon">&#10003;</span> 3-month minimum per channel</li>
+        </ul>
+        <div class="note">Activate channels as you scale. Start with 1–2, add more as pipeline builds.</div>
+      </div>
+      <div class="pricing-block border-cyan">
+        <h4>Email Marketing</h4>
+        <div class="big-price">$1,500/mo</div>
+        <div class="price-sub">design + copywriting</div>
+        <ul>
+          <li><span class="icon">&#10003;</span> Email campaign strategy and calendar</li>
+          <li><span class="icon">&#10003;</span> HTML email template design</li>
+          <li><span class="icon">&#10003;</span> Copywriting for all campaigns</li>
+          <li><span class="icon">&#10003;</span> Existing supplier outreach sequences</li>
+          <li><span class="icon">&#10003;</span> New advertiser nurture flows</li>
+          <li><span class="icon">&#10003;</span> Performance reporting</li>
+        </ul>
+        <div class="note">Covers up to 8 email campaigns per month. Additional campaigns quoted separately.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Ad spend is separate</strong> — paid directly to ad platforms (LinkedIn, Meta, Google). Not included in CDE fees. Recommended starting budget: $3,000–5,000/month across channels.
+    </div>
+    <div class="callout">
+      <strong>Not included:</strong> Social media content creation (covered by Not An Agency), influencer marketing, PR/press, event management, video production, or programmatic platform setup.
+    </div>
+  </section>
+
+  <!-- ── Pricing Summary ── -->
+  <section class="section" id="pricing">
+    <div class="section-label">Investment</div>
+    <h2 class="section-title">Pricing Summary</h2>
+    <p class="section-desc">All CDE deliverables and fees at a glance.</p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Type</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Brand Development</strong></td>
+          <td>One-time</td>
+          <td>$5,500</td>
+        </tr>
+        <tr>
+          <td><strong>Advertiser Microsite</strong></td>
+          <td>One-time</td>
+          <td>$5,000</td>
+        </tr>
+        <tr>
+          <td><strong>Paid Ads Creative — Initial Suite</strong></td>
+          <td>One-time</td>
+          <td>$2,500</td>
+        </tr>
+        <tr>
+          <td><strong>Paid Ads Creative — Monthly</strong></td>
+          <td>Monthly</td>
+          <td>$1,500/mo</td>
+        </tr>
+        <tr>
+          <td><strong>Paid Ads Management</strong></td>
+          <td>Per channel/mo</td>
+          <td>$2,000/channel/mo</td>
+        </tr>
+        <tr>
+          <td><strong>Email Marketing</strong></td>
+          <td>Monthly</td>
+          <td>$1,500/mo</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-blue">
+      Phase 1 (brand + microsite) is a fixed engagement. Phase 2 retainers activate independently — start with the channels that make sense and scale from there.
+    </div>
+  </section>
+
+  <!-- ── Year 1 Projection ── -->
+  <section class="section section-gray" id="math">
+    <div class="section-label">Year 1 Projection</div>
+    <h2 class="section-title">CDE Investment — Year 1</h2>
+    <p class="section-desc">Assuming 2 paid channels active for 9 months (post-Phase 1), with email marketing running concurrently.</p>
+
+    <div class="big-stat-grid">
+      <div class="big-stat-box">
+        <div class="label">Phase 1 (One-Time)</div>
+        <div class="number">$13,000</div>
+        <div class="sub">Brand + Microsite + Creative Suite</div>
+      </div>
+      <div class="big-stat-box">
+        <div class="label">Phase 2 (9-Month Retainer)</div>
+        <div class="number">$49,500</div>
+        <div class="sub">2 channels + creative + email</div>
+      </div>
+      <div class="big-stat-box featured">
+        <div class="label">Total Year 1</div>
+        <div class="number">$62,500</div>
+        <div class="sub">CDE scope only, excl. ad spend</div>
+      </div>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Line Item</th>
+          <th>Calculation</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Brand Development</strong></td>
+          <td>One-time</td>
+          <td>$5,500</td>
+        </tr>
+        <tr>
+          <td><strong>Advertiser Microsite</strong></td>
+          <td>One-time</td>
+          <td>$5,000</td>
+        </tr>
+        <tr>
+          <td><strong>Ads Creative — Initial Suite</strong></td>
+          <td>One-time</td>
+          <td>$2,500</td>
+        </tr>
+        <tr>
+          <td><strong>Ads Creative — Monthly</strong></td>
+          <td>$1,500 x 9 months</td>
+          <td>$13,500</td>
+        </tr>
+        <tr>
+          <td><strong>Ads Management — 2 Channels</strong></td>
+          <td>$2,000 x 2 x 9 months</td>
+          <td>$36,000</td>
+        </tr>
+        <tr>
+          <td><strong>Email Marketing</strong></td>
+          <td>Included in ads creative monthly</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Note on email marketing:</strong> The $1,500/mo email retainer can run concurrently with paid ads or independently. If activated for 9 months, add $13,500 to the Year 1 total ($76,000 all-in). The projection above shows the base scenario without email to illustrate the modular pricing — activate what you need, when you need it.
+    </div>
+  </section>
+
+  <!-- ── Timeline ── -->
+  <section class="section" id="timeline">
+    <div class="section-label">Timeline</div>
+    <h2 class="section-title">From brand to live campaigns in 14 weeks.</h2>
+    <p class="section-desc">Phase 1 (brand + microsite) runs months 1–3, aligning with Lynk's foundation phase. Paid activation begins month 4.</p>
+
+    <div class="timeline-h">
+      <div class="timeline-step">
+        <div class="timeline-dot"><div class="timeline-dot-inner"></div></div>
+        <div>
+          <div class="timeline-weeks">Wk 1–2</div>
+          <h4>Brand Discovery</h4>
+          <p>LuLu brand review, competitive audit, Lynk positioning</p>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-dot"><div class="timeline-dot-inner"></div></div>
+        <div>
+          <div class="timeline-weeks">Wk 2–4</div>
+          <h4>Brand Delivery</h4>
+          <p>Visual identity, guidelines, messaging framework</p>
+        </div>
+      </div>
+      <div class="timeline-step">
+        <div class="timeline-dot"><div class="timeline-dot-inner"></div></div>
+        <div>
+          <div class="timeline-weeks">Wk 4–8</div>
+          <h4>Microsite Design & Build</h4>
+          <p>Wireframes, UI design, development, QA</p>
+        </div>
+      </div>
+      <div class="timeline-step p2">
+        <div class="timeline-dot phase2"><div class="timeline-dot-inner"></div></div>
+        <div>
+          <div class="timeline-weeks">Wk 9–11</div>
+          <h4>Creative Suite + Setup</h4>
+          <p>Ad creative production, platform setup, email templates</p>
+        </div>
+      </div>
+      <div class="timeline-step p2">
+        <div class="timeline-dot phase2"><div class="timeline-dot-inner"></div></div>
+        <div>
+          <div class="timeline-weeks">Wk 12–14</div>
+          <h4>Campaigns Live</h4>
+          <p>Paid ads launch, email sequences activated</p>
+        </div>
+      </div>
+      <div class="timeline-step p3">
+        <div class="timeline-dot phase3"><div class="timeline-dot-inner"></div></div>
+        <div>
+          <div class="timeline-weeks">Wk 14+</div>
+          <h4>Optimize & Scale</h4>
+          <p>Performance reports, new channels, creative refresh</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Terms & Next Steps ── -->
+  <section class="section section-gray" id="terms">
+    <h2 class="section-title">Terms & Next Steps</h2>
+    <div style="height: 24px;"></div>
+
+    <div class="terms-grid">
+      <div>
+        <h3 style="font-size: 18px; margin-bottom: 20px; color: var(--gray-mid);">Terms</h3>
+        <div class="term-item">
+          <span class="term-num">01</span>
+          <span class="term-text"><strong>Currency:</strong> All fees quoted in USD.</span>
+        </div>
+        <div class="term-item">
+          <span class="term-num">02</span>
+          <span class="term-text"><strong>Payment terms:</strong> Net 30 from invoice date.</span>
+        </div>
+        <div class="term-item">
+          <span class="term-num">03</span>
+          <span class="term-text"><strong>Channel minimum:</strong> 3-month minimum commitment per active paid channel.</span>
+        </div>
+        <div class="term-item">
+          <span class="term-num">04</span>
+          <span class="term-text"><strong>Ad spend:</strong> Paid directly to ad platforms. Not included in CDE fees.</span>
+        </div>
+        <div class="term-item">
+          <span class="term-num">05</span>
+          <span class="term-text"><strong>Scope changes:</strong> Any work outside the defined scope will be quoted separately before proceeding.</span>
+        </div>
+        <div class="term-item">
+          <span class="term-num">06</span>
+          <span class="term-text"><strong>Collective scope:</strong> This covers CDE's deliverables only. PNC (strategy, sales, PR) and Not An Agency (social, events, influencer) are scoped separately.</span>
+        </div>
+        <div class="term-item">
+          <span class="term-num">07</span>
+          <span class="term-text"><strong>Case study rights:</strong> CDE reserves the right to feature this engagement as a case study with client approval.</span>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-size: 18px; margin-bottom: 20px; color: var(--gray-mid);">Next Steps</h3>
+        <div class="next-step">
+          <div class="next-step-num">1</div>
+          <div class="next-step-content">
+            <h4>Align on CDE scope within collective proposal</h4>
+            <p>Confirm CDE deliverables and pricing with PNC before presenting to LuLu.</p>
+          </div>
+        </div>
+        <div class="next-step">
+          <div class="next-step-num">2</div>
+          <div class="next-step-content">
+            <h4>Present to LuLu — April 6</h4>
+            <p>Collective pitch with phased rollout. CDE scope presented within the broader plan.</p>
+          </div>
+        </div>
+        <div class="next-step">
+          <div class="next-step-num">3</div>
+          <div class="next-step-content">
+            <h4>Approval + Phase 1 deposit</h4>
+            <p>$2,750 brand deposit to kick off discovery. Microsite deposit follows.</p>
+          </div>
+        </div>
+        <div class="next-step">
+          <div class="next-step-num">4</div>
+          <div class="next-step-content">
+            <h4>Brand discovery begins within 1 week</h4>
+            <p>LuLu brand review, stakeholder input, competitive positioning for Lynk.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-bottom">
+      <p>Ready to build the advertiser engine for Lynk by LuLu?</p>
+      <a href="mailto:balaji@cd-expansion.com">Get in touch &rarr; balaji@cd-expansion.com</a>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <img src="cde-logo-black.png" alt="Core Digital Expansion">
+    <p>&copy; 2026 Core Digital Expansion. All rights reserved.</p>
+  </footer>
+
+</div>
+
+<!-- ═══════════ SCROLL SPY ═══════════ -->
+<script>
+(function() {
+  const links = document.querySelectorAll('.sidebar-link[data-section]');
+  const sections = [];
+  links.forEach(function(link) {
+    const id = link.getAttribute('data-section');
+    const el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+  });
+  function onScroll() {
+    const scrollY = window.scrollY + 120;
+    let current = sections[0];
+    for (let i = 0; i < sections.length; i++) {
+      if (sections[i].el.offsetTop <= scrollY) current = sections[i];
+    }
+    links.forEach(function(l) { l.classList.remove('active'); });
+    if (current) current.link.classList.add('active');
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+})();
+</script>
+</body>
+</html>
