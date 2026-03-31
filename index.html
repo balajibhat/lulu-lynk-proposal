@@ -108,14 +108,16 @@
   }
 
   .hero-badge {
-    display: inline-block; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;
+    display: inline-block; align-self: flex-start;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 2px;
     color: var(--cyan); font-weight: 700;
     background: rgba(125,211,232,.12); border: 1px solid rgba(125,211,232,.2);
     padding: 6px 16px; border-radius: 100px; margin-bottom: 24px;
+    width: auto; max-width: fit-content;
   }
   .hero h1 { font-size: clamp(32px, 4vw, 48px); font-weight: 700; margin-bottom: 20px; max-width: 700px; line-height: 1.1; color: #fff; }
-  .hero-subtitle { font-size: 18px; color: rgba(255,255,255,0.6); max-width: 600px; line-height: 1.7; margin-bottom: 32px; }
-  .hero-mission { font-size: 14px; color: rgba(255,255,255,0.35); max-width: 550px; line-height: 1.6; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .hero-subtitle { font-size: 18px; color: rgba(255,255,255,0.65); max-width: 600px; line-height: 1.7; margin-bottom: 32px; }
+  .hero-mission { font-size: 14px; color: rgba(255,255,255,0.55); max-width: 550px; line-height: 1.6; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.15); }
 
   /* ── Cards & Grid ── */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
