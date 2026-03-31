@@ -22,8 +22,8 @@ var HERO_CONFIG = {
   nodeMaxSize: 4,
   connectionDistance: 150,
   // Animation
-  speed: 0.3,
-  meshSpeed: 0.0003,
+  speed: 0.5,
+  meshSpeed: 0.0008,
   // Mouse
   mouseRadius: 200,
   mouseForce: 0.02
@@ -73,8 +73,8 @@ var HERO_CONFIG = {
     this.freqY = rand(0.4, 1.1);
     this.phaseX = rand(0, Math.PI * 2);
     this.phaseY = rand(0, Math.PI * 2);
-    this.ampX = rand(w * 0.06, w * 0.14);
-    this.ampY = rand(h * 0.06, h * 0.14);
+    this.ampX = rand(w * 0.1, w * 0.22);
+    this.ampY = rand(h * 0.1, h * 0.22);
     // Slow morph of radius
     this.radiusFreq = rand(0.3, 0.8);
     this.radiusAmp = this.radius * 0.12;
@@ -173,9 +173,14 @@ var HERO_CONFIG = {
     this.vx = clamp(this.vx, -maxV, maxV);
     this.vy = clamp(this.vy, -maxV, maxV);
 
-    // Slight friction to keep things calm
-    this.vx *= 0.999;
-    this.vy *= 0.999;
+    // Gentle drift force — nodes always have a base velocity so animation never dies
+    var angle = t * 0.0002 * this.speedMult + this.opacityPhase;
+    this.vx += Math.cos(angle) * 0.005 * cfg.speed;
+    this.vy += Math.sin(angle * 0.7) * 0.005 * cfg.speed;
+
+    // Light friction — enough to prevent runaway, not enough to kill motion
+    this.vx *= 0.998;
+    this.vy *= 0.998;
 
     // Mouse repulsion
     if (mouseActive) {
@@ -230,6 +235,7 @@ var HERO_CONFIG = {
   var animId = null;
   var startTime = 0;
   var lastW = 0, lastH = 0;
+  var activeConnectionDist = HERO_CONFIG.connectionDistance;
 
   function init() {
     canvas = document.getElementById('hero-canvas');
@@ -261,6 +267,13 @@ var HERO_CONFIG = {
     };
   }
 
+  // Scale config values relative to a 1440px baseline
+  function getResponsiveScale() {
+    var baseline = 1440;
+    var size = Math.min(W, H);
+    return Math.max(0.5, Math.min(1.2, size / baseline + 0.3));
+  }
+
   function resize() {
     var parent = canvas.parentElement || document.body;
     var rect = parent.getBoundingClientRect ? parent.getBoundingClientRect() : { width: window.innerWidth, height: window.innerHeight };
@@ -283,10 +296,26 @@ var HERO_CONFIG = {
     canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    // Rescale blobs
-    if (blobs.length && (oldW !== W || oldH !== H)) {
+    // Responsive scaling — adjust connection distance and node count for screen size
+    var scale = getResponsiveScale();
+    activeConnectionDist = Math.floor(HERO_CONFIG.connectionDistance * scale);
+
+    // Rebuild nodes/blobs on significant resize (e.g. orientation change)
+    var sizeChanged = (oldW !== W || oldH !== H);
+    var majorChange = Math.abs(W - oldW) > 200 || Math.abs(H - oldH) > 200;
+
+    if (blobs.length && sizeChanged) {
       for (var i = 0; i < blobs.length; i++) {
         blobs[i].resize(W, H, oldW, oldH);
+      }
+    }
+
+    // On major resize, rebuild nodes scaled to new dimensions
+    if (majorChange && nodes.length) {
+      var targetCount = Math.max(30, Math.floor(HERO_CONFIG.nodeCount * scale));
+      nodes = [];
+      for (var j = 0; j < targetCount; j++) {
+        nodes.push(new Node(W, H, HERO_CONFIG));
       }
     }
 
@@ -381,7 +410,7 @@ var HERO_CONFIG = {
   }
 
   function drawConnections(cfg) {
-    var dist = cfg.connectionDistance;
+    var dist = activeConnectionDist;
     var distSq = dist * dist;
 
     // Parse base line color once
