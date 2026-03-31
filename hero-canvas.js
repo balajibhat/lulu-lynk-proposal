@@ -141,63 +141,66 @@ var HERO_CONFIG = {
       this.speedMult = 1.0;
     }
 
-    this.x = rand(w * 0.05, w * 0.95);
-    this.y = rand(h * 0.05, h * 0.95);
-    // Random initial direction with guaranteed minimum velocity
-    var angle = rand(0, Math.PI * 2);
-    var mag = rand(0.3, 0.6) * cfg.speed * this.speedMult;
-    this.vx = Math.cos(angle) * mag;
-    this.vy = Math.sin(angle) * mag;
-
     var colors = cfg.colors.nodes;
     this.color = colors[Math.floor(Math.random() * colors.length)];
     this.rgb = hexToRgb(this.color);
 
-    // Slight opacity oscillation
+    // Orbital/wandering path — each node has its own unique anchor + orbit
+    // This guarantees even spread and perpetual motion (no pooling)
+    this.anchorX = rand(0.08, 0.92) * w;
+    this.anchorY = rand(0.08, 0.92) * h;
+    this.orbitRx = rand(w * 0.04, w * 0.18);
+    this.orbitRy = rand(h * 0.04, h * 0.18);
+    this.freqX = rand(0.15, 0.5) * this.speedMult;
+    this.freqY = rand(0.15, 0.5) * this.speedMult;
+    this.phaseX = rand(0, Math.PI * 2);
+    this.phaseY = rand(0, Math.PI * 2);
+
+    // Set initial position from orbit
+    this.x = this.anchorX;
+    this.y = this.anchorY;
+
+    // Mouse displacement (smoothed)
+    this.mx = 0;
+    this.my = 0;
+
+    // Opacity oscillation
     this.opacityBase = this.opacity;
     this.opacityFreq = rand(0.3, 1.2);
     this.opacityPhase = rand(0, Math.PI * 2);
   }
 
   Node.prototype.update = function (t, w, h, mx, my, mouseActive, cfg) {
-    // Drift
-    this.x += this.vx;
-    this.y += this.vy;
+    // Orbital position — smooth, perpetual, never pools
+    var speed = cfg.speed * 0.001;
+    this.x = this.anchorX + Math.sin(t * speed * this.freqX + this.phaseX) * this.orbitRx;
+    this.y = this.anchorY + Math.cos(t * speed * this.freqY + this.phaseY) * this.orbitRy;
 
-    // Soft edge bounce — reverse velocity with damping when near edges
-    var margin = 30;
-    if (this.x < margin) { this.vx = Math.abs(this.vx) * 0.8 + 0.05; this.x = margin; }
-    if (this.x > w - margin) { this.vx = -Math.abs(this.vx) * 0.8 - 0.05; this.x = w - margin; }
-    if (this.y < margin) { this.vy = Math.abs(this.vy) * 0.8 + 0.05; this.y = margin; }
-    if (this.y > h - margin) { this.vy = -Math.abs(this.vy) * 0.8 - 0.05; this.y = h - margin; }
-
-    // Gentle drift force — sinusoidal so nodes always have motion
-    var angle = t * 0.0003 * this.speedMult + this.opacityPhase;
-    this.vx += Math.cos(angle) * 0.008 * cfg.speed;
-    this.vy += Math.sin(angle * 0.7 + 1.5) * 0.008 * cfg.speed;
-
-    // Clamp velocity
-    var maxV = 1.5 * cfg.speed;
-    this.vx = clamp(this.vx, -maxV, maxV);
-    this.vy = clamp(this.vy, -maxV, maxV);
-
-    // Very light friction — keeps things smooth without killing motion
-    this.vx *= 0.997;
-    this.vy *= 0.997;
-
-    // Mouse repulsion
+    // Mouse repulsion (smoothed displacement)
     if (mouseActive) {
       var dx = this.x - mx;
       var dy = this.y - my;
       var dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < cfg.mouseRadius && dist > 0) {
-        var force = (1 - dist / cfg.mouseRadius) * cfg.mouseForce;
-        // Larger nodes react a bit less for a parallax feel
+        var force = (1 - dist / cfg.mouseRadius) * 40;
         var layerDampen = this.layer === 0 ? 1.4 : this.layer === 1 ? 1.0 : 0.6;
-        this.vx += (dx / dist) * force * layerDampen;
-        this.vy += (dy / dist) * force * layerDampen;
+        this.mx += ((dx / dist) * force * layerDampen - this.mx) * 0.08;
+        this.my += ((dy / dist) * force * layerDampen - this.my) * 0.08;
+      } else {
+        this.mx *= 0.92;
+        this.my *= 0.92;
       }
+    } else {
+      this.mx *= 0.92;
+      this.my *= 0.92;
     }
+
+    this.x += this.mx;
+    this.y += this.my;
+
+    // Keep within bounds
+    this.x = clamp(this.x, 5, w - 5);
+    this.y = clamp(this.y, 5, h - 5);
 
     // Oscillate opacity
     this.opacity = this.opacityBase + Math.sin(t * 0.001 * this.opacityFreq + this.opacityPhase) * 0.12;
@@ -313,12 +316,26 @@ var HERO_CONFIG = {
       }
     }
 
-    // On major resize, rebuild nodes scaled to new dimensions
-    if (majorChange && nodes.length) {
+    // On major resize, rescale node anchors and orbits proportionally
+    if (sizeChanged && nodes.length) {
+      var rx = W / (oldW || 1);
+      var ry = H / (oldH || 1);
+      for (var j = 0; j < nodes.length; j++) {
+        nodes[j].anchorX *= rx;
+        nodes[j].anchorY *= ry;
+        nodes[j].orbitRx *= rx;
+        nodes[j].orbitRy *= ry;
+      }
+    }
+
+    // On major resize, also adjust node count
+    if (majorChange) {
       var targetCount = Math.max(30, Math.floor(HERO_CONFIG.nodeCount * scale));
-      nodes = [];
-      for (var j = 0; j < targetCount; j++) {
-        nodes.push(new Node(W, H, HERO_CONFIG));
+      if (Math.abs(targetCount - nodes.length) > 10) {
+        nodes = [];
+        for (var k = 0; k < targetCount; k++) {
+          nodes.push(new Node(W, H, HERO_CONFIG));
+        }
       }
     }
 
